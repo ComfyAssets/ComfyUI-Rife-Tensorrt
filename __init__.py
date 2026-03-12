@@ -83,7 +83,7 @@ class LoadRifeTensorrtModel:
 
     RETURN_NAMES = ("rife_trt_model",)
     RETURN_TYPES = ("RIFE_TRT_MODEL",)
-    CATEGORY = "tensorrt"
+    CATEGORY = "🫶 ComfyAssets/🛠️ Utils"
     DESCRIPTION = "Load RIFE tensorrt models, they will be built automatically if not found."
     FUNCTION = "load_rife_tensorrt_model"
 
@@ -155,7 +155,7 @@ class RifeTensorrt:
 
     RETURN_TYPES = ("IMAGE", )
     FUNCTION = "vfi"
-    CATEGORY = "tensorrt"
+    CATEGORY = "🫶 ComfyAssets/🛠️ Utils"
     OUTPUT_NODE=True
 
     def vfi(
