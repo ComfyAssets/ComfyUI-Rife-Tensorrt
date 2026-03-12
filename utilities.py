@@ -1,3 +1,4 @@
+import os
 import requests
 from tqdm import tqdm
 import logging
@@ -84,18 +85,26 @@ def download_file(url, save_path):
     """
     GREEN = '\033[92m'
     RESET = '\033[0m'
+    tmp_path = save_path + ".tmp"
     response = requests.get(url, stream=True)
+    response.raise_for_status()
     total_size = int(response.headers.get('content-length', 0))
 
-    with open(save_path, 'wb') as file, tqdm(
-        desc=save_path,
-        total=total_size,
-        unit='iB',
-        unit_scale=True,
-        unit_divisor=1024,
-        colour='green',
-        bar_format=f'{GREEN}{{l_bar}}{{bar}}{RESET}{GREEN}{{r_bar}}{RESET}'
-    ) as progress_bar:
-        for data in response.iter_content(chunk_size=1024):
-            size = file.write(data)
-            progress_bar.update(size)
+    try:
+        with open(tmp_path, 'wb') as file, tqdm(
+            desc=save_path,
+            total=total_size,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+            colour='green',
+            bar_format=f'{GREEN}{{l_bar}}{{bar}}{RESET}{GREEN}{{r_bar}}{RESET}'
+        ) as progress_bar:
+            for data in response.iter_content(chunk_size=1024):
+                size = file.write(data)
+                progress_bar.update(size)
+        os.rename(tmp_path, save_path)
+    except Exception:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise

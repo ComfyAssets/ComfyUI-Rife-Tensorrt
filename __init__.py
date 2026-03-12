@@ -115,7 +115,7 @@ class LoadRifeTensorrtModel:
             mm.soft_empty_cache()
             s = time.time()
             engine = Engine(tensorrt_model_path)
-            engine.build(
+            ret = engine.build(
                 onnx_path=onnx_model_path,
                 fp16=True if precision == "fp16" else False,
                 input_profile=[
@@ -125,6 +125,10 @@ class LoadRifeTensorrtModel:
                     }
                 ],
             )
+            if ret != 0:
+                if os.path.exists(tensorrt_model_path):
+                    os.remove(tensorrt_model_path)
+                raise RuntimeError(f"Failed to build TensorRT engine from {onnx_model_path}")
             e = time.time()
             rife_logger.info(f"Time taken to build: {(e-s)} seconds")
 
